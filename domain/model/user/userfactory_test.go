@@ -7,6 +7,14 @@ import (
 	"github.com/google/go-cmp/cmp/cmpopts"
 )
 
+type UserFactorierStub struct {
+	create func(userName UserName) (*User, error)
+}
+
+func (ufs UserFactorierStub) Create(userName UserName) (*User, error) {
+	return ufs.create(userName)
+}
+
 func Test_Create(t *testing.T) {
 	name, err := NewUserName("userName")
 	if err != nil {

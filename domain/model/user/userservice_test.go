@@ -1,20 +1,28 @@
 package user
 
 import (
-	"fmt"
 	"testing"
 )
 
+type UserServicerStub struct {
+	exists func(user User) (bool, error)
+}
+
+func (uss *UserServicerStub) Exists(user *User) (bool, error) {
+	return uss.exists(*user)
+}
+
 type UserRepositorierStub struct {
 	findByUserName func(name UserName) (*User, error)
+	save           func(user User) error
 }
 
 func (urs *UserRepositorierStub) FindByUserName(name *UserName) (*User, error) {
 	return urs.findByUserName(*name)
 }
 
-func (us *UserRepositorierStub) Save(user *User) error {
-	return fmt.Errorf("not implemented err")
+func (urs *UserRepositorierStub) Save(user *User) error {
+	return urs.save(*user)
 }
 
 func Test_Exists(t *testing.T) {

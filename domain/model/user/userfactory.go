@@ -5,7 +5,7 @@ import (
 )
 
 type UserFactorier interface {
-	Create(UserName) (User, error)
+	Create(UserName) (*User, error)
 }
 
 type UserFactory struct{}
