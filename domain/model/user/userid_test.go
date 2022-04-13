@@ -25,26 +25,22 @@ func Test_UserIdEquals(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	t.Run("equal", func(t *testing.T) {
-		otherUserId, err := NewUserId("id")
-		if err != nil {
-			t.Fatal(err)
-		}
-
-		if !userId.Equals(otherUserId) {
-			t.Errorf("userId: %v must be equal to otherUserId: %v", userId, otherUserId)
-		}
-	})
-	t.Run("not equal", func(t *testing.T) {
-		otherUserId, err := NewUserId("otherId")
-		if err != nil {
-			t.Fatal(err)
-		}
-
-		if userId.Equals(otherUserId) {
-			t.Errorf("userId: %v must be equal to otherUserId: %v", userId, otherUserId)
-		}
-	})
+	data := []struct {
+		testName    string
+		otherUserId *UserId
+		want        bool
+	}{
+		{"equal", &UserId{value: "id"}, true},
+		{"not equal", &UserId{value: "otherId"}, false},
+	}
+	for _, d := range data {
+		t.Run(d.testName, func(t *testing.T) {
+			got := userId.Equals(d.otherUserId)
+			if diff := cmp.Diff(d.want, got, cmp.AllowUnexported()); diff != "" {
+				t.Errorf("mismatch (-want, +got):\n%s", diff)
+			}
+		})
+	}
 }
 
 func Test_UserIdString(t *testing.T) {
