@@ -8,3 +8,5 @@ require (
 	github.com/google/uuid v1.3.0
 	github.com/lib/pq v1.10.5
 )
+
+require golang.org/x/xerrors v0.0.0-20191204190536-9bdfabe68543 // indirect
