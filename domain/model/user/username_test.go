@@ -8,17 +8,29 @@ import (
 )
 
 func Test_NewUserName(t *testing.T) {
-	t.Run("success", func(t *testing.T) {
-		got, err := NewUserName("username")
-		if err != nil {
-			t.Fatal(err)
-		}
-
-		want := &UserName{value: "username"}
-		if diff := cmp.Diff(want, got, cmp.AllowUnexported(UserName{})); diff != "" {
-			t.Errorf("mismatch (-want, +got):\n%s", diff)
-		}
-	})
+	data := []struct {
+		testName string
+		userName string
+		want     *UserName
+		errMsg   string
+	}{
+		{"success", "username", &UserName{value: "username"}, ""},
+	}
+	for _, d := range data {
+		t.Run(d.testName, func(t *testing.T) {
+			got, err := NewUserName(d.userName)
+			if diff := cmp.Diff(d.want, got, cmp.AllowUnexported(UserName{})); diff != "" {
+				t.Errorf("mismatch (-want, +got):\n%s", diff)
+			}
+			var errMsg string
+			if err != nil {
+				errMsg = err.Error()
+			}
+			if errMsg != d.errMsg {
+				t.Errorf("Expected error `%s`, got `%s`", d.errMsg, errMsg)
+			}
+		})
+	}
 	t.Run("fail because value is less than 3 characters", func(t *testing.T) {
 		_, err := NewUserName("us")
 		want := "UserName is more than 3 characters."
