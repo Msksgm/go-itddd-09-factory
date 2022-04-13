@@ -5,18 +5,12 @@ import (
 	"testing"
 )
 
-type UserRepositorierStub struct{}
+type UserRepositorierStub struct {
+	findByUserName func(name UserName) (*User, error)
+}
 
-func (us *UserRepositorierStub) FindByUserName(name *UserName) (*User, error) {
-	userId, _ := NewUserId("userId")
-	userName, _ := NewUserName("userName")
-	user, _ := NewUser(*userId, *userName)
-
-	if !userName.Equals(*name) {
-		return nil, nil
-	}
-
-	return user, nil
+func (urs *UserRepositorierStub) FindByUserName(name *UserName) (*User, error) {
+	return urs.findByUserName(*name)
 }
 
 func (us *UserRepositorierStub) Save(user *User) error {
@@ -24,30 +18,30 @@ func (us *UserRepositorierStub) Save(user *User) error {
 }
 
 func Test_Exists(t *testing.T) {
-	userService := UserService{userRepository: &UserRepositorierStub{}}
-
 	userId, _ := NewUserId("userId")
 	userName, _ := NewUserName("userName")
-	t.Run("exists", func(t *testing.T) {
-		user, _ := NewUser(*userId, *userName)
+	data := []struct {
+		name           string
+		findByUserName func(name UserName) (*User, error)
+		want           bool
+		user           *User
+		testErrMsg     string
+	}{
+		{"exists", func(name UserName) (*User, error) { return &User{name: *userName, id: *userId}, nil }, true, &User{name: *userName, id: *userId}, "isExists must be true but false"},
+		{"not exists", func(name UserName) (*User, error) { return nil, nil }, false, &User{name: *userName, id: *userId}, "isExists must be false but true"},
+	}
+	userService := UserService{}
 
-		isExists, err := userService.Exists(user)
-		if err != nil {
-			t.Fatal(err)
-		}
-		if !isExists {
-			t.Errorf("isExists must be true but false")
-		}
-	})
-	t.Run("not exists", func(t *testing.T) {
-		otherUserName, _ := NewUserName("otherUserName")
-		user, _ := NewUser(*userId, *otherUserName)
-		isExists, err := userService.Exists(user)
-		if err != nil {
-			t.Fatal(err)
-		}
-		if isExists {
-			t.Errorf("isExists must be false but true")
-		}
-	})
+	for _, d := range data {
+		t.Run(d.name, func(t *testing.T) {
+			userService.userRepository = &UserRepositorierStub{findByUserName: d.findByUserName}
+			got, err := userService.Exists(d.user)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got != d.want {
+				t.Errorf(d.testErrMsg)
+			}
+		})
+	}
 }
