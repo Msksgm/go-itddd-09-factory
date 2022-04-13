@@ -16,6 +16,7 @@ func Test_NewUserName(t *testing.T) {
 	}{
 		{"success", "username", &UserName{value: "username"}, ""},
 		{"fail because value is less than 3 characters", "us", nil, "UserName is more than 3 characters."},
+		{"fail because value is more than 20 characters", "usernameusernameusername", nil, "UserName is less than 20 characters."},
 	}
 	for _, d := range data {
 		t.Run(d.testName, func(t *testing.T) {
@@ -32,13 +33,6 @@ func Test_NewUserName(t *testing.T) {
 			}
 		})
 	}
-	t.Run("fail because value is more than 20 characters", func(t *testing.T) {
-		_, err := NewUserName("usernameusernameusername")
-		want := "UserName is less than 20 characters."
-		if got := err.Error(); got != want {
-			t.Errorf("got %s, want %s", got, want)
-		}
-	})
 }
 
 func Test_UserNameEquals(t *testing.T) {
