@@ -1,9 +1,5 @@
 package user
 
-type UserServicer interface {
-	Exists(user *User) (bool, error)
-}
-
 type UserService struct {
 	userRepository UserRepositorier
 }

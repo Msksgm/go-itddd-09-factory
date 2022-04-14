@@ -32,7 +32,7 @@ func Test_Register(t *testing.T) {
 			userApplicationService.userFactory = &UserFactorierStub{create: d.create}
 			userApplicationService.userRepository = &UserRepositorierStub{save: d.save}
 			userService.userRepository = &UserRepositorierStub{findByUserName: d.findByUserName}
-			userApplicationService.userService = &userService
+			userApplicationService.userService = userService
 
 			err := userApplicationService.Register("userName")
 			var errMsg string

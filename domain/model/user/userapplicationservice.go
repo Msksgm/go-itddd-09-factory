@@ -3,10 +3,10 @@ package user
 type UserApplicationService struct {
 	userFactory    UserFactorier
 	userRepository UserRepositorier
-	userService    UserServicer
+	userService    UserService
 }
 
-func NewUserApplicationService(userFactory UserFactorier, userRepository UserRepositorier, userService UserServicer) (*UserApplicationService, error) {
+func NewUserApplicationService(userFactory UserFactorier, userRepository UserRepositorier, userService UserService) (*UserApplicationService, error) {
 	return &UserApplicationService{userFactory: userFactory, userRepository: userRepository, userService: userService}, nil
 }
 
