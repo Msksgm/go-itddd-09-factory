@@ -36,7 +36,7 @@ func (ur *UserRepository) FindByUserName(name *UserName) (user *User, err error)
 
 	rows, err := tx.Query("SELECT id, name FROM users WHERE name = $1", name.value)
 	if err != nil {
-		return nil, &FindByUserNameQueryError{UserName: *name, Message: fmt.Sprintf("error is occured in userrepository.FindByUserName: %s", err), Err: err}
+		return nil, &FindByUserNameQueryError{UserName: *name, Message: fmt.Sprintf("userrepository.FindByUserName err: %s", err), Err: err}
 	}
 	defer rows.Close()
 
