@@ -4,14 +4,6 @@ import (
 	"testing"
 )
 
-type UserServicerStub struct {
-	exists func(user User) (bool, error)
-}
-
-func (uss *UserServicerStub) Exists(user *User) (bool, error) {
-	return uss.exists(*user)
-}
-
 type UserRepositorierStub struct {
 	findByUserName func(name UserName) (*User, error)
 	save           func(user User) error

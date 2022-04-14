@@ -25,12 +25,14 @@ func Test_Register(t *testing.T) {
 		},
 	}
 	userApplicationService := UserApplicationService{}
+	userService := UserService{}
 
 	for _, d := range data {
 		t.Run(d.testname, func(t *testing.T) {
 			userApplicationService.userFactory = &UserFactorierStub{create: d.create}
-			userApplicationService.userRepository = &UserRepositorierStub{findByUserName: d.findByUserName, save: d.save}
-			userApplicationService.userService = &UserServicerStub{exists: d.exists}
+			userApplicationService.userRepository = &UserRepositorierStub{save: d.save}
+			userService.userRepository = &UserRepositorierStub{findByUserName: d.findByUserName}
+			userApplicationService.userService = &userService
 
 			err := userApplicationService.Register("userName")
 			var errMsg string
