@@ -1,5 +1,7 @@
 package user
 
+import "fmt"
+
 type UserApplicationService struct {
 	userFactory    UserFactorier
 	userRepository UserRepositorier
@@ -10,7 +12,12 @@ func NewUserApplicationService(userFactory UserFactorier, userRepository UserRep
 	return &UserApplicationService{userFactory: userFactory, userRepository: userRepository, userService: userService}, nil
 }
 
-func (uas *UserApplicationService) Register(name string) error {
+func (uas *UserApplicationService) Register(name string) (err error) {
+	defer func() {
+		if err != nil {
+			err = &RegisterError{Name: name, Message: fmt.Sprintf("userapplicationservice.Register err: %s", err), Err: err}
+		}
+	}()
 	userName, err := NewUserName(name)
 	if err != nil {
 		return err
@@ -22,12 +29,25 @@ func (uas *UserApplicationService) Register(name string) error {
 	}
 
 	isUserExists, err := uas.userService.Exists(user)
-	if isUserExists {
+	if err != nil {
 		return err
+	}
+	if isUserExists {
+		return fmt.Errorf("user name of %s is already exists.", name)
 	}
 
 	if err := uas.userRepository.Save(user); err != nil {
 		return err
 	}
 	return nil
+}
+
+type RegisterError struct {
+	Name    string
+	Message string
+	Err     error
+}
+
+func (err *RegisterError) Error() string {
+	return err.Message
 }
