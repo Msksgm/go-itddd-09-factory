@@ -4,8 +4,8 @@ type UserService struct {
 	userRepository UserRepositorier
 }
 
-func NewUserService(userRepository *UserRepositorier) (*UserService, error) {
-	return &UserService{userRepository: *userRepository}, nil
+func NewUserService(userRepository UserRepositorier) (*UserService, error) {
+	return &UserService{userRepository: userRepository}, nil
 }
 
 func (us *UserService) Exists(user *User) (bool, error) {
