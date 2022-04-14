@@ -1,4 +1,4 @@
-module github.com/Msksgm/go-itddd-09-factory
+module github.com/msksgm/go-itddd-09-factory
 
 go 1.18
 
