@@ -1,6 +1,9 @@
 package user
 
-import "fmt"
+import (
+	"fmt"
+	"log"
+)
 
 type UserApplicationService struct {
 	userFactory    UserFactorier
@@ -39,6 +42,8 @@ func (uas *UserApplicationService) Register(name string) (err error) {
 	if err := uas.userRepository.Save(user); err != nil {
 		return err
 	}
+
+	log.Printf("user name of %s is successfully saved", name)
 	return nil
 }
 
